@@ -6,16 +6,6 @@ from PIL import Image
 from datetime import datetime
 from garmentclassifier import GarmentClassifier
 
-# 定义图像转换操作：将图像转换为张量，并进行归一化处理
-transform = transforms.Compose([
-    transforms.Resize((28, 28)),  # 调整图像大小为28x28
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
-])
-
-# 加载训练好的模型
-model = GarmentClassifier()
-
 def get_latest_model_path(directory, pattern="model_*.pth"):
     # 获取目录下所有符合模式的文件
     model_files = glob.glob(os.path.join(directory, pattern))
@@ -26,6 +16,16 @@ def get_latest_model_path(directory, pattern="model_*.pth"):
     latest_model_file = max(model_files, key=os.path.getmtime)
     return latest_model_file
 
+
+# 定义图像转换操作：将图像转换为张量，并进行归一化处理
+transform = transforms.Compose([
+    transforms.Resize((28, 28)),  # 调整图像大小为28x28
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+# 加载训练好的模型
+model = GarmentClassifier()
 model_path = get_latest_model_path('./')  # 获取最新的模型文件
 model.load_state_dict(torch.load(model_path, weights_only=False)) # 加载模型参数
 model.eval()  # 设置模型为评估模式

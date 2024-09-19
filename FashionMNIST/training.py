@@ -4,23 +4,23 @@ import torchvision
 import torchvision.transforms as transforms
 from garmentclassifier import GarmentClassifier
 
-# 实例化模型
-model = GarmentClassifier()
-# 定义损失函数为交叉熵损失
-loss_fn = torch.nn.CrossEntropyLoss()
-# 定义优化器为随机梯度下降（SGD），学习率为0.001，动量为0.9
-optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-
 # 定义图像转换操作：将图像转换为张量，并进行归一化处理
 transform = transforms.Compose(
     [transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))])
+    transforms.Normalize((0.5,), (0.5,))]) # 对图像的每个通道进行标准化，使得每个通道的像素值具有零均值和单位标准差
 
 # 加载FashionMNIST训练数据集，并应用定义的图像转换操作
 training_set = torchvision.datasets.FashionMNIST('./data', train=True, transform=transform)
 
 # 创建数据加载器，用于批量加载训练数据，batch_size为4，数据顺序随机打乱
 trainloader = torch.utils.data.DataLoader(training_set, batch_size=4, shuffle=True)
+
+# 实例化模型
+model = GarmentClassifier()
+# 定义损失函数为交叉熵损失
+loss_fn = torch.nn.CrossEntropyLoss()
+# 定义优化器为随机梯度下降（SGD），学习率为0.001，动量为0.9
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
 # 训练模型，训练2个epoch
 for epoch in range(2):
