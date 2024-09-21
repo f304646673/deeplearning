@@ -16,6 +16,7 @@ def get_latest_model_path(directory, pattern="model_*.pth"):
     latest_model_file = max(model_files, key=os.path.getmtime)
     return latest_model_file
 
+
 # 定义图像转换操作：将图像转换为张量，并进行归一化处理
 transform = transforms.Compose([
     transforms.Resize((28, 28)),  # 调整图像大小为28x28
@@ -23,13 +24,8 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# 将模型移动到GPU上
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-# 实例化模型并移动到GPU上
-model = GarmentClassifier().to(device)  
-
 # 加载训练好的模型
+model = GarmentClassifier()
 model_path = get_latest_model_path('./')  # 获取最新的模型文件
 model.load_state_dict(torch.load(model_path, weights_only=False)) # 加载模型参数
 model.eval()  # 设置模型为评估模式
@@ -41,7 +37,6 @@ image = Image.open(image_path).convert('L')  # 将图像转换为灰度图
 # 预处理图像
 image = transform(image)
 image = image.unsqueeze(0)  # 增加一个批次维度
-image = image.to(device)  # 将图像移动到GPU上
 
 # 推理（预测）
 with torch.no_grad():  # 在推理过程中不需要计算梯度
